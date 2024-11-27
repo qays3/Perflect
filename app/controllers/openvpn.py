@@ -1,4 +1,3 @@
-# /home/hidden/Downloads/DashBoard/app/controllers/openvpn.py
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, FileResponse
 from models.openvpn import OpenVPNData
