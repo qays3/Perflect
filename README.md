@@ -5,7 +5,8 @@
 
 Perflect Dashboard is a FastAPI-powered application designed to optimize and manage Linux-based operating systems. It provides a range of system utilities and monitoring tools accessible via a web-based dashboard, making it easy to configure, monitor, and control essential aspects of your OS. Key features include Docker management, OpenVPN creation, system controls, automated tasks, and network traffic monitoring, all designed to help streamline Linux server management.
 
-<video controls src="video/Perflect.mp4" title="Title"></video>
+[Watch the Perflect Demo Video](video/Perflect.mp4)
+
 
 ---
 
