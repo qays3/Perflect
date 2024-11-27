@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link rel="icon" type="image/png" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="57x57" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/img/Perflect.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/tailwind.output.css" />
+
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+  <script src="/static/js/init-alpine.js"></script>
+
+  <link href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/scroll.css" />
+  <script src="/static/js/script.js"></script>
+
+</head>
+
+<body :class="{ 'text-black bg-gray-50': !dark, 'text-white bg-gray-900': dark }">
+  <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen}">
+
+    {% include 'includes/sidebar.html' %}
+
+    <div class="flex flex-col flex-1">
+      {% include 'includes/header.html' %}
+      <main class="h-full pb-16 overflow-y-auto">
+        <div class="container px-6 mx-auto grid">
+          <div class="container mx-auto p-6">
+            <h1 class="text-3xl font-bold mb-6">Process Management</h1>
+      
+            {% if message %}
+              <div style="padding: 10px; background-color: #4CAF50; color: white; border-radius: 5px;">
+                {{ message }}
+              </div>
+            {% endif %}
+      
+            <section class="mb-8 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+              <h2 class="text-2xl font-semibold mb-4">Running Processes</h2>
+      
+              <div style="max-height: 400px; overflow-y: auto;">
+                <table class="w-full table-auto">
+                  <thead>
+                    <tr class="text-left text-sm">
+                      <th class="px-4 py-2">PID</th>
+                      <th class="px-4 py-2">Process Name</th>
+                      <th class="px-4 py-2">CPU Usage</th>
+                      <th class="px-4 py-2">Memory Usage</th>
+                      <th class="px-4 py-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="processList">
+                    {% for process in processes %}
+                      <tr class="text-sm">
+                        <td class="px-4 py-2">{{ process.pid }}</td>
+                        <td class="px-4 py-2">{{ process.name }}</td>
+                        <td class="px-4 py-2">{{ process.cpu }}</td>
+                        <td class="px-4 py-2">{{ process.memory }}</td>
+                        <td class="px-4 py-2">
+                          <button type="button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200" onclick="killProcess({{ process.pid }})">
+                            Kill
+                          </button>
+                          <button type="button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 ml-2" onclick="killProcessForce({{ process.pid }})">
+                            Kill Force
+                          </button>
+                        </td>
+                        
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+      
+      <div id="messageBox" style="display:none; padding: 10px; background-color: #4CAF50; color: white; border-radius: 5px; position: fixed; bottom: 20px; right: 20px;">
+        Process killed successfully.
+      </div>
+      
+      
+      
+      
+    </div>
+  </div>
+
+  <script>
+    async function fetchProcesses() {
+      const response = await fetch('/processes');
+      const data = await response.json();
+      const processList = document.getElementById('processList');
+      const processRows = Array.from(processList.getElementsByTagName('tr'));
+  
+      processRows.forEach(row => {
+        const pid = row.id.replace('process-', '');
+        if (!data.processes.some(p => p.pid === parseInt(pid))) {
+          row.remove();
+        }
+      });
+  
+      data.processes.forEach(process => {
+        const existingRow = document.getElementById(`process-${process.pid}`);
+        if (!existingRow) {
+          const row = document.createElement('tr');
+          row.id = `process-${process.pid}`;
+          row.className = 'text-sm';
+          row.innerHTML = `
+            <td class="px-4 py-2">${process.pid}</td>
+            <td class="px-4 py-2">${process.name}</td>
+            <td class="px-4 py-2">${process.cpu}</td>
+            <td class="px-4 py-2">${process.memory}</td>
+            <td class="px-4 py-2">
+              <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200" onclick="killProcess(${process.pid})">Kill</button>
+              <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 ml-2" onclick="killProcessForce(${process.pid})">Kill Force</button>
+            </td>
+          `;
+          processList.appendChild(row);
+        } else {
+          existingRow.children[2].textContent = process.cpu;
+          existingRow.children[3].textContent = process.memory;
+        }
+      });
+    }
+  
+    async function killProcess(pid) {
+      const response = await fetch(`/kill/${pid}`, { method: 'POST' });
+      if (response.ok) {
+        removeProcessRow(pid);
+        showMessage('Process killed successfully.');
+      }
+    }
+  
+    async function killProcessForce(pid) {
+      const response = await fetch(`/kill_force/${pid}`, { method: 'POST' });
+      if (response.ok) {
+        removeProcessRow(pid);
+        showMessage('Force kill executed.');
+      }
+    }
+  
+    function removeProcessRow(pid) {
+      const row = document.getElementById(`process-${pid}`);
+      if (row) {
+        row.remove();
+      }
+    }
+  
+    function showMessage(message) {
+      const messageBox = document.getElementById('messageBox');
+      messageBox.innerText = message;
+      messageBox.style.display = 'block';
+      setTimeout(() => {
+        messageBox.style.display = 'none';
+      }, 2000);
+    }
+  
+    setInterval(fetchProcesses, 5000);
+    window.onload = fetchProcesses;
+  </script>
+  
+  
+  
+  
+  
+  
+  
+</body>
+
+</html>

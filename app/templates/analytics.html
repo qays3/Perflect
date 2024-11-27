@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link rel="icon" type="image/png" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="57x57" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/img/Perflect.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/tailwind.output.css" />
+
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+  <script src="/static/js/init-alpine.js"></script>
+
+  <link href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/scroll.css" />
+  <script src="/static/js/script.js"></script>
+
+</head>
+
+<body>
+  <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen}">
+
+    {% include 'includes/sidebar.html' %}
+
+    <div class="flex flex-col flex-1">
+      {% include 'includes/header.html' %}
+      <main class="h-full pb-16 overflow-y-auto">
+
+        <div class="container px-6 mx-auto grid" :class="{ 'bg-white': !dark, 'bg-gray-900': dark, 'text-black': !dark, 'text-white': dark }">
+      
+          <script src="https://code.highcharts.com/highcharts.js"></script>
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+      
+          <div class="container px-6 mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+              <!-- CPU Usage Chart -->
+              <section class="p-4 shadow-lg" :class="{ 'bg-white': !dark, 'bg-[#191c24]': dark }">
+                <h4 class="text-lg font-semibold mb-4" :class="{ 'text-black': !dark, 'text-white': dark }">
+                  <i :class="['fas', 'fa-chart-line', dark ? 'text-white' : 'text-black', 'mr-2']"></i> CPU Usage Over Time
+                </h4>
+                <div class="w-3/4 mx-auto h-48 rounded-2xl overflow-hidden">
+                  <div id="cpuUsageChart" class="w-full h-full"></div>
+                </div>
+              </section>
+      
+              <!-- Memory Usage Chart -->
+              <section class="p-4 shadow-lg" :class="{ 'bg-white': !dark, 'bg-[#191c24]': dark }">
+                <h4 class="text-lg font-semibold mb-4" :class="{ 'text-black': !dark, 'text-white': dark }">
+                  <i :class="['fas', 'fa-chart-line', dark ? 'text-white' : 'text-black', 'mr-2']"></i> Memory Usage Over Time
+                </h4>
+                <div class="w-3/4 mx-auto h-48 rounded-2xl overflow-hidden">
+                  <div id="memoryUsageChart" class="w-full h-full"></div>
+                </div>
+              </section>
+      
+              <!-- Disk Usage Chart -->
+              <section class="p-4 shadow-lg" :class="{ 'bg-white': !dark, 'bg-[#191c24]': dark }">
+                <h4 class="text-lg font-semibold mb-4" :class="{ 'text-black': !dark, 'text-white': dark }">
+                  <i :class="['fas', 'fa-chart-line', dark ? 'text-white' : 'text-black', 'mr-2']"></i> Disk Usage Over Time
+                </h4>
+                <div class="w-3/4 mx-auto h-48 rounded-2xl overflow-hidden">
+                  <div id="diskUsageChart" class="w-full h-full"></div>
+                </div>
+              </section>
+      
+            </div>
+      
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+      
+              <!-- Network Traffic Chart -->
+              <section class="p-4 shadow-lg" :class="{ 'bg-white': !dark, 'bg-[#191c24]': dark }">
+                <h4 class="text-lg font-semibold mb-4" :class="{ 'text-black': !dark, 'text-white': dark }">
+                  <i :class="['fas', 'fa-chart-line', dark ? 'text-white' : 'text-black', 'mr-2']"></i> Network Traffic Analytics
+                </h4>
+                <div class="w-3/4 mx-auto h-48 rounded-2xl overflow-hidden">
+                  <div id="networkTrafficChart" class="w-full h-full"></div>
+                </div>
+              </section>
+      
+              <!-- System Load Chart -->
+              <section class="p-4 shadow-lg" :class="{ 'bg-white': !dark, 'bg-[#191c24]': dark }">
+                <h4 class="text-lg font-semibold mb-4" :class="{ 'text-black': !dark, 'text-white': dark }">
+                  <i :class="['fas', 'fa-chart-line', dark ? 'text-white' : 'text-black', 'mr-2']"></i> System Load Over Time
+                </h4>
+                <div class="w-3/4 mx-auto h-48 rounded-2xl overflow-hidden">
+                  <div id="systemLoadChart" class="w-full h-full"></div>
+                </div>
+              </section>
+      
+
+      
+            </div>
+      
+          </div>
+      
+        </div>
+      
+      </main>
+    </div>
+  </div>
+  <script>
+    const purpleColor = '#8a2be2';
+  
+     
+    async function fetchAnalyticsData() {
+      try {
+        const response = await fetch('/api/analytics-data');
+        const data = await response.json();
+        updateCharts(data.current_data, data.historical_data);
+      } catch (error) {
+        console.error('Error fetching analytics data:', error);
+      }
+    }
+  
+     
+    function getChartConfig(title, seriesData, yAxisTitle) {
+      const isDarkMode = getTheme();
+      const backgroundColor = isDarkMode ? '#191c24' : '#ffffff';
+      const textColor = isDarkMode ? '#ffffff' : '#000000';
+  
+      return {
+        chart: {
+          type: 'area',
+          backgroundColor: backgroundColor,
+          borderRadius: 20
+        },
+        title: {
+          text: title,
+          style: {
+            color: textColor,
+            fontSize: '10px'
+          }
+        },
+        xAxis: {
+          labels: {
+            style: {
+              color: textColor,
+              fontSize: '8px'
+            }
+          }
+        },
+        yAxis: {
+          title: {
+            text: yAxisTitle,
+            style: {
+              color: textColor,
+              fontSize: '8px'
+            }
+          },
+          labels: {
+            style: {
+              color: textColor,
+              fontSize: '8px'
+            }
+          }
+        },
+        series: [{
+          name: title,
+          data: seriesData,
+          color: purpleColor,
+          fillColor: {
+            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+            stops: [
+              [0, 'rgba(138, 43, 226, 0.4)'],
+              [1, 'rgba(138, 43, 226, 0)']
+            ]
+          }
+        }],
+        legend: {
+          itemStyle: {
+            color: textColor,
+            fontSize: '8px'
+          }
+        }
+      };
+    }
+  
+     
+    function updateCharts(currentData, historicalData) {
+      Highcharts.chart('cpuUsageChart', getChartConfig('CPU Usage Over Time', historicalData.map(item => item.cpu_usage), 'CPU (%)'));
+      Highcharts.chart('memoryUsageChart', getChartConfig('Memory Usage Over Time', historicalData.map(item => item.memory_usage), 'Memory (GB)'));
+      Highcharts.chart('diskUsageChart', getChartConfig('Disk Usage Over Time', historicalData.map(item => item.disk_usage), 'Disk Usage (GB)'));
+      Highcharts.chart('networkTrafficChart', getChartConfig('Network Traffic Analytics', historicalData.map(item => item.network_activity), 'Traffic (Mbps)'));
+      Highcharts.chart('systemLoadChart', getChartConfig('System Load Over Time', historicalData.map(item => item.system_load), 'Load'));
+      Highcharts.chart('hardwareChart', getChartConfig('Hardware Analytics', historicalData.map(item => item.hardware_metrics), 'Hardware'));
+    }
+  
+     
+    function getTheme() {
+      return document.documentElement.classList.contains('theme-dark');
+    }
+  
+     
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchAnalyticsData();
+      document.documentElement.style.backgroundColor = getTheme() ? '#191c24' : '#ffffff';
+    });
+  </script>
+</body>
+
+</html>

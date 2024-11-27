@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link rel="icon" type="image/png" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="57x57" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/img/Perflect.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/tailwind.output.css" />
+
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+  <script src="/static/js/init-alpine.js"></script>
+
+  <link href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/scroll.css" />
+  <script src="/static/js/script.js"></script>
+
+</head>
+
+<body>
+  <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen}">
+
+    {% include 'includes/sidebar.html' %}
+
+    <div class="flex flex-col flex-1">
+      {% include 'includes/header.html' %}
+      <main class="h-full pb-16 overflow-y-auto mt-6"
+        :class="{ 'text-black bg-white': !dark, 'text-white bg-gray-900': dark }">
+
+        <div class="container px-6 mx-auto flex flex-col gap-6">
+
+          <div class="flex space-x-6">
+
+            <div
+              class="bg-[#8743ff] dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col justify-between border-2 border-purple-600 w-full sm:w-auto">
+
+              <h2 class="text-xl font-semibold mb-4">Run Docker Container from DockerHub</h2>
+
+              <input class="w-full p-2 mb-4 rounded-md text-gray-900 dark:bg-gray-700 dark:text-gray-200" type="text"
+                id="dockerImage" placeholder="Enter Docker image" aria-label="Docker Image" />
+
+              <button class="bg-[#8743ff] text-white py-2 px-4 rounded" id="runContainerBtn"
+                style="background-color: #8743ff;">Run</button>
+
+            </div>
+
+            <div
+              class="bg-[#8743ff] dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col justify-between border-2 border-purple-600 w-full sm:w-auto">
+
+              <h2 class="text-xl font-semibold mb-4">Clean Docker Cache</h2>
+
+              <button class="bg-[#8743ff] text-white py-2 px-4 rounded" id="cleanCacheBtn"
+                style="background-color: #8743ff;">Clean</button>
+
+            </div>
+
+            <div
+              class="bg-[#8743ff] dark:bg-gray-800 rounded-lg shadow-lg p-6 flex flex-col justify-between border-2 border-purple-600 w-full sm:w-auto">
+
+              <h2 class="text-xl font-semibold mb-4">Stop All Docker Containers</h2>
+
+              <button class="bg-[#8743ff] text-white py-2 px-4 rounded" id="stopAllBtn"
+                style="background-color: #8743ff;">Stop All</button>
+
+            </div>
+
+          </div>
+
+          <div class="overflow-x-auto mt-6">
+
+            <table class="min-w-full table-auto" :class="{ 'bg-black text-white': dark, 'bg-white text-black': !dark }">
+
+              <thead class="bg-gray-100 dark:bg-gray-700">
+
+                <tr>
+
+                  <th class="px-4 py-2 text-left">CONTAINER ID</th>
+
+                  <th class="px-4 py-2 text-left">IMAGE</th>
+
+                  <th class="px-4 py-2 text-left">COMMAND</th>
+
+                  <th class="px-4 py-2 text-left">CREATED</th>
+
+                  <th class="px-4 py-2 text-left">STATUS</th>
+
+                  <th class="px-4 py-2 text-left">PORTS</th>
+
+                  <th class="px-4 py-2 text-left">NAMES</th>
+
+                  <th class="px-4 py-2 text-left">ACTIONS</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody id="dockerTableBody" class="dark:text-gray-200 text-gray-800">
+
+                {% for container in containers %}
+
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+
+                  <td class="px-4 py-2">{{ container.container_id }}</td>
+
+                  <td class="px-4 py-2">{{ container.image }}</td>
+
+                  <td class="px-4 py-2">{{ container.command }}</td>
+
+                  <td class="px-4 py-2">{{ container.created }}</td>
+
+                  <td class="px-4 py-2">{{ container.status }}</td>
+
+                  <td class="px-4 py-2">{{ container.ports }}</td>
+
+                  <td class="px-4 py-2">{{ container.names }}</td>
+
+                  <td class="px-4 py-2">
+
+                    <button class="stop-btn bg-[#8743ff] text-white py-2 px-4 rounded"
+                      data-id="{{ container.container_id }}" style="background-color: #8743ff;">Stop</button>
+
+                  </td>
+
+                </tr>
+
+                {% endfor %}
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </main>
+
+      <div id="messageBox"
+        style="display:none; padding: 10px; background-color: #4CAF50; color: white; border-radius: 5px; position: fixed; bottom: 20px; right: 20px;">
+      </div>
+
+
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".stop-btn").forEach(btn => {
+            btn.addEventListener("click", async function() {
+                const containerId = this.getAttribute("data-id");
+                const response = await fetch(`/docker/stop/${containerId}`, { method: "POST" });
+                const data = await response.json();
+                updateTable(data.containers);
+                showMessage(data.message);
+            });
+        });
+        document.getElementById("cleanCacheBtn").addEventListener("click", async () => {
+            const response = await fetch("/docker/clean_cache", { method: "POST" });
+            const data = await response.json();
+            updateTable(data.containers);
+            showMessage(data.message);
+        });
+        document.getElementById("stopAllBtn").addEventListener("click", async () => {
+            const response = await fetch("/docker/stop_all", { method: "POST" });
+            const data = await response.json();
+            if (data.message) {
+                showMessage(data.message);
+            } else {
+                showMessage("Failed to stop all containers.");
+            }
+            updateTable(data.containers);
+        });
+
+
+
+        document.getElementById("runContainerBtn").addEventListener("click", async () => {
+            const image = document.getElementById("dockerImage").value.trim();
+            
+            if (!image) {
+                showMessage("Image name is required.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/docker/run", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ image: image }) 
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    updateTable(data.containers);
+                    showMessage(data.message);
+                } else {
+                    showMessage(data.error || "Failed to start container.");
+                }
+            } catch (err) {
+                showMessage("An error occurred while communicating with the server.");
+            }
+        });
+
+
+
+
+
+        function updateTable(containers) {
+            const tableBody = document.getElementById("dockerTableBody");
+            tableBody.innerHTML = containers.map(container => `
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <td class="px-4 py-2">${container.container_id}</td>
+                    <td class="px-4 py-2">${container.image}</td>
+                    <td class="px-4 py-2">${container.command}</td>
+                    <td class="px-4 py-2">${container.created}</td>
+                    <td class="px-4 py-2">${container.status}</td>
+                    <td class="px-4 py-2">${container.ports}</td>
+                    <td class="px-4 py-2">${container.names}</td>
+                    <td class="px-4 py-2">
+                        <button class="stop-btn bg-[#8743ff] text-white py-2 px-4 rounded" data-id="${container.container_id}" style="background-color: #8743ff;">Stop</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        function showMessage(message) {
+            const messageBox = document.getElementById("messageBox");
+            messageBox.innerText = message;
+            messageBox.style.display = "block";
+            setTimeout(() => {
+                messageBox.style.display = "none";
+            }, 3000);
+        }
+    });
+    </script>
+
+</body>
+
+</html>
