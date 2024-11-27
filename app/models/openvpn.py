@@ -1,4 +1,3 @@
-# /home/hidden/Downloads/DashBoard/app/models/openvpn.py
 import os
 import subprocess
 import time
@@ -30,19 +29,19 @@ class OpenVPNData(BaseModel):
             return None
 
     def get_server_ip(self):
-        # Fetching the server's IP dynamically using the command you specified
+
         command = "hostname -I | awk '{print $1}'"
         ip_address = self.run_command(command)
         if ip_address:
             return ip_address.strip()
         else:
-            return "127.0.0.1"  # Default fallback if command fails
+            return "127.0.0.1"  
 
     def generate_ovpn_file(self):
         print("Generating .ovpn client file...")
         client_ovpn_file = f"/root/{self.client_name}.ovpn"
         
-        server_ip = self.get_server_ip()  # Get the server's IP dynamically
+        server_ip = self.get_server_ip() 
 
         ca_cert_path = "/root/easy-rsa/pki/ca.crt"
         client_cert_path = "/root/easy-rsa/pki/issued/client.crt"
