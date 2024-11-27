@@ -4,6 +4,10 @@ PORT=9393
 IP="127.0.0.1"
 
 setup() {
+    sudo apt-get update
+    echo ""
+    sudo apt-get install python3.12-venv
+    echo ""
     sudo apt install ufw -y
     echo ""
     sudo apt install nginx -y
