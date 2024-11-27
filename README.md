@@ -347,9 +347,14 @@ The OpenVPN page enables the creation and management of OpenVPN instances to est
 ## Installation
 
 ```bash
-git clone https://github.com/your-repository/perflect-dashboard.git
-cd perflect-dashboard
+git clone https://github.com/qays3/Perflect
+cd Perflect-main
+cd app
+python3 -m venv myenv
+source myenv/bin/activate
 pip install -r requirements.txt
+
+sudo myenv/bin/uvicorn main:app --reload --host 127.0.0.1 --port 9393
 ```
 
 Run the app:
