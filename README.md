@@ -279,6 +279,70 @@ The startups page allows users to upload shell scripts or executable files to be
 
 ---
 
+### Docker
+
+The Docker page allows users to manage Docker containers directly from the dashboard, offering insights into their status and the ability to start, stop, or restart containers.
+
+```py
+    def get_docker_containers() -> List[DockerContainer]:
+        result = subprocess.run(
+            ["docker", "ps", "-a"], capture_output=True, text=True, check=True
+        )
+
+        containers = []
+        for line in result.stdout.splitlines()[1:]:
+            parts = line.split()
+            container_id = parts[0]
+            container_name = parts[-1]
+            status = parts[4]
+            containers.append(DockerContainer(id=container_id, name=container_name, status=status))
+
+        return containers
+```
+---
+### Processes
+
+The Processes page provides detailed information about running processes, including the ability to manage them (kill, stop, restart, etc.).
+
+```py
+    def get_processes() -> List[ProcessInfo]:
+        result = subprocess.run(
+            ["ps", "-aux"], capture_output=True, text=True, check=True
+        )
+
+        processes = []
+        for line in result.stdout.splitlines()[1:]:
+            parts = line.split()
+            pid = parts[1]
+            user = parts[0]
+            cpu = parts[2]
+            mem = parts[3]
+            command = " ".join(parts[10:])
+            processes.append(ProcessInfo(pid=pid, user=user, cpu=cpu, mem=mem, command=command))
+
+        return processes
+```
+---
+### OpenVPN
+
+The OpenVPN page enables the creation and management of OpenVPN instances to establish secure connections.
+
+```py
+    def create_openvpn_config(file) -> str:
+        filename = file.filename
+        destination_path = os.path.join("/etc/openvpn", filename)
+
+        with open(destination_path, 'wb') as f:
+            f.write(file.read())
+
+        subprocess.run(["systemctl", "start", "openvpn@{}".format(filename)], check=True)
+        return f"OpenVPN instance {filename} created and started."
+```
+
+---
+
+
+
 ## Installation
 
 ```bash
