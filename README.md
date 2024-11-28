@@ -360,7 +360,8 @@ sudo myenv/bin/uvicorn main:app --reload --host 127.0.0.1 --port 9393
 Run the app:
 
 ```bash
-uvicorn app.main:app --reload
+chmod +x setup.sh
+./setup.sh
 ```
 
 ---
