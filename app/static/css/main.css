@@ -55,3 +55,23 @@ button.reloading .button-text {
 button:not(.reloading) .reload-icon {
   display: none;
 }
+
+/**/
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.pulse-animation {
+  background-color: rgba(138, 43, 226, 0.1);
+  animation: pulse 1.5s infinite;
+  border-radius: 16px;
+}

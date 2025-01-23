@@ -5,8 +5,7 @@
 
 Perflect Dashboard is a FastAPI-powered application designed to optimize and manage Linux-based operating systems. It provides a range of system utilities and monitoring tools accessible via a web-based dashboard, making it easy to configure, monitor, and control essential aspects of your OS. Key features include Docker management, OpenVPN creation, system controls, automated tasks, and network traffic monitoring, all designed to help streamline Linux server management.
 
-[Watch the Perflect Demo Video](video/Perflect.mp4)
-
+<video controls src="video/Perflect.mp4" title="Title"></video>
 
 ---
 
@@ -347,21 +346,15 @@ The OpenVPN page enables the creation and management of OpenVPN instances to est
 ## Installation
 
 ```bash
-git clone https://github.com/qays3/Perflect
-cd Perflect-main
-cd app
-python3 -m venv myenv
-source myenv/bin/activate
+git clone https://github.com/your-repository/perflect-dashboard.git
+cd perflect-dashboard
 pip install -r requirements.txt
-
-sudo myenv/bin/uvicorn main:app --reload --host 127.0.0.1 --port 9393
 ```
 
 Run the app:
 
 ```bash
-chmod +x setup.sh
-./setup.sh
+uvicorn app.main:app --reload
 ```
 
 ---
