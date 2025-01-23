@@ -85,23 +85,14 @@
               <thead class="bg-gray-100 dark:bg-gray-700">
 
                 <tr>
-
                   <th class="px-4 py-2 text-left">CONTAINER ID</th>
-
                   <th class="px-4 py-2 text-left">IMAGE</th>
-
                   <th class="px-4 py-2 text-left">COMMAND</th>
-
                   <th class="px-4 py-2 text-left">CREATED</th>
-
                   <th class="px-4 py-2 text-left">STATUS</th>
-
                   <th class="px-4 py-2 text-left">PORTS</th>
-
                   <th class="px-4 py-2 text-left">NAMES</th>
-
                   <th class="px-4 py-2 text-left">ACTIONS</th>
-
                 </tr>
 
               </thead>
@@ -111,23 +102,14 @@
                 {% for container in containers %}
 
                 <tr class="border-b border-gray-200 dark:border-gray-700">
-
                   <td class="px-4 py-2">{{ container.container_id }}</td>
-
                   <td class="px-4 py-2">{{ container.image }}</td>
-
                   <td class="px-4 py-2">{{ container.command }}</td>
-
                   <td class="px-4 py-2">{{ container.created }}</td>
-
                   <td class="px-4 py-2">{{ container.status }}</td>
-
                   <td class="px-4 py-2">{{ container.ports }}</td>
-
                   <td class="px-4 py-2">{{ container.names }}</td>
-
                   <td class="px-4 py-2">
-
                     <button class="stop-btn bg-[#8743ff] text-white py-2 px-4 rounded"
                       data-id="{{ container.container_id }}" style="background-color: #8743ff;">Stop</button>
 
