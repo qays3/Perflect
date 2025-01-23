@@ -70,11 +70,14 @@
                         <td class="px-4 py-2">{{ process.memory }}</td>
                         <td class="px-4 py-2">
                           <button type="button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200" onclick="killProcess({{ process.pid }})">
-                            Kill
-                          </button>
-                          <button type="button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 ml-2" onclick="killProcessForce({{ process.pid }})">
-                            Kill Force
-                          </button>
+                            <span class="reload-icon"></span>
+                            <span class="button-text">Kill</span>
+                        </button>
+                        
+                        <button type="button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 ml-2" onclick="killProcessForce({{ process.pid }})">
+                            <span class="reload-icon"></span>
+                            <span class="button-text">Kill Force</span>
+                        </button>
                         </td>
                         
                       </tr>
@@ -135,21 +138,43 @@
       });
     }
   
-    async function killProcess(pid) {
+      async function killProcess(pid) {
+      const button = document.querySelector(`button[onclick="killProcess(${pid})"]`);
+      if (button) {
+          button.classList.add("reloading");
+          button.style.pointerEvents = "none";
+      }
+
       const response = await fetch(`/kill/${pid}`, { method: 'POST' });
       if (response.ok) {
-        removeProcessRow(pid);
-        showMessage('Process killed successfully.');
+          removeProcessRow(pid);
+          showMessage('Process killed successfully.');
       }
-    }
-  
-    async function killProcessForce(pid) {
+
+      if (button) {
+          button.classList.remove("reloading");
+          button.style.pointerEvents = "auto";
+      }
+  }
+
+  async function killProcessForce(pid) {
+      const button = document.querySelector(`button[onclick="killProcessForce(${pid})"]`);
+      if (button) {
+          button.classList.add("reloading");
+          button.style.pointerEvents = "none";
+      }
+
       const response = await fetch(`/kill_force/${pid}`, { method: 'POST' });
       if (response.ok) {
-        removeProcessRow(pid);
-        showMessage('Force kill executed.');
+          removeProcessRow(pid);
+          showMessage('Force kill executed.');
       }
-    }
+
+      if (button) {
+          button.classList.remove("reloading");
+          button.style.pointerEvents = "auto";
+      }
+  }
   
     function removeProcessRow(pid) {
       const row = document.getElementById(`process-${pid}`);
