@@ -36,10 +36,12 @@
                   <div class="flex items-center space-x-4 mb-6">
                      <input type="number" placeholder="Enter Port Number" class="w-1/3 p-2 border rounded-md dark:bg-gray-800 dark:text-white text-gray-800" id="portNumber" min="1" step="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
                      <button onclick="handlePort('open')" class="px-4 py-2 font-semibold text-white rounded-md" style="background-color: #191c24;">
-                     Open Port
+                      <span class="reload-icon"></span>
+                      <span class="button-text">Open Port</span>
                      </button>
                      <button onclick="handlePort('close')" class="px-4 py-2 font-semibold text-white rounded-md" style="background-color: #8743ff;">
-                     Close Port
+                      <span class="reload-icon"></span>
+                      <span class="button-text">Close Port</span>
                      </button>
                   </div>
                   <div class="table-container" style="max-height: 400px; overflow-y: auto;">
@@ -62,7 +64,8 @@
                               <td class="px-4 py-2">{{ port.pid }}</td>
                               <td class="px-4 py-2">
                                  <button onclick="handleClosePort({{ port.port }})" class="px-4 py-2 text-white rounded-md" style="background-color: #8743ff;">
-                                 Close
+                                  <span class="reload-icon"></span>
+                                  <span class="button-text">Close</span>
                                  </button>
                               </td>
                            </tr>
@@ -77,143 +80,109 @@
       </div>
       </div>
       <script>
+function startReloadAnimation(button) {
+    button.classList.add("reloading");
+    button.style.pointerEvents = "none";
+}
 
-        function handlePort(action) {
-    
-          const port = document.getElementById("portNumber").value;
-    
-      
-    
-          if (!port) {
-    
-            alert("Please enter a port number.");
-    
-            return;
-    
-          }
-    
-      
-    
-          const url = action === "close" ? `/ports/close/${port}` : `/ports/open/${port}`;
-    
-      
-    
-          fetch(url, {
-    
-            method: "POST",
-    
-            headers: { "Content-Type": "application/json" },
-    
-          })
-    
-          .then(response => {
-    
-            if (!response.ok) {
-    
-              return response.json().then(data => {
-    
+function stopReloadAnimation(button) {
+    button.classList.remove("reloading");
+    button.style.pointerEvents = "auto";
+}
+
+function handlePort(action) {
+    const port = document.getElementById("portNumber").value;
+
+    if (!port) {
+        alert("Please enter a port number.");
+        return;
+    }
+
+    const button = action === "close" 
+        ? document.querySelector(`button[onclick="handleClosePort(${port})"]`) 
+        : document.querySelector(`button[onclick="handlePort('${action}')"]`);
+
+    if (button) {
+        startReloadAnimation(button);
+    }
+
+    const url = action === "close" ? `/ports/close/${port}` : `/ports/open/${port}`;
+
+    fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
                 alert("Error: " + (data.detail || "Unknown error"));
-    
-              });
-    
-            }
-    
-            return response.json();
-    
-          })
-    
-          .then(data => {
-    
-            if (data && data.status) {
-    
-              alert(data.status);
-    
-              updatePortsTable(data.ports);
-    
-            }
-    
-          })
-    
-          .catch(error => {
-    
-            alert("Network error: " + error);
-    
-          });
-    
+            });
         }
-    
-      
-    
-        function handleClosePort(port) {
-    
-          fetch(`/ports/close/${port}`, {
-    
-            method: "POST",
-    
-            headers: { "Content-Type": "application/json" },
-    
-          })
-    
-          .then(response => response.json())
-    
-          .then(data => {
-    
-            if (data && data.status) {
-    
-              alert(data.status);
-    
-              updatePortsTable(data.ports);
-    
-            }
-    
-          })
-    
-          .catch(error => alert("Error: " + error));
-    
+        return response.json();
+    })
+    .then(data => {
+        if (data && data.status) {
+            alert(data.status);
+            updatePortsTable(data.ports);
         }
-    
-      
-    
-        function updatePortsTable(ports) {
-    
-          const tableBody = document.getElementById("portsTableBody");
-    
-          tableBody.innerHTML = '';
-    
-          ports.forEach(port => {
-    
-            const row = document.createElement("tr");
-    
-            row.classList.add("border-b", "dark:border-gray-700", "text-gray-800", "dark:text-gray-300");
-    
-            row.innerHTML = `
-    
-              <td class="px-4 py-2">${port.port}</td>
-    
-              <td class="px-4 py-2">${port.service}</td>
-    
-              <td class="px-4 py-2">${port.protocol}</td>
-    
-              <td class="px-4 py-2">${port.pid}</td>
-    
-              <td class="px-4 py-2">
-    
+    })
+    .catch(error => {
+        alert("Network error: " + error);
+    })
+    .finally(() => {
+        if (button) {
+            stopReloadAnimation(button);
+        }
+    });
+}
+
+function handleClosePort(port) {
+    const button = document.querySelector(`button[onclick="handleClosePort(${port})"]`);
+
+    if (button) {
+        startReloadAnimation(button);
+    }
+
+    fetch(`/ports/close/${port}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.status) {
+            alert(data.status);
+            updatePortsTable(data.ports);
+        }
+    })
+    .catch(error => alert("Error: " + error))
+    .finally(() => {
+        if (button) {
+            stopReloadAnimation(button);
+        }
+    });
+}
+
+function updatePortsTable(ports) {
+    const tableBody = document.getElementById("portsTableBody");
+    tableBody.innerHTML = '';
+    ports.forEach(port => {
+        const row = document.createElement("tr");
+        row.classList.add("border-b", "dark:border-gray-700", "text-gray-800", "dark:text-gray-300");
+        row.innerHTML = `
+            <td class="px-4 py-2">${port.port}</td>
+            <td class="px-4 py-2">${port.service}</td>
+            <td class="px-4 py-2">${port.protocol}</td>
+            <td class="px-4 py-2">${port.pid}</td>
+            <td class="px-4 py-2">
                 <button onclick="handleClosePort(${port.port})" class="px-4 py-2 text-white rounded-md" style="background-color: #8743ff;">
-    
-                  Close
-    
+                    <span class="reload-icon"></span>
+                    <span class="button-text">Close</span>
                 </button>
-    
-              </td>
-    
-            `;
-    
-            tableBody.appendChild(row);
-    
-          });
-    
-        }
-    
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
       </script>
    </body>
 </html>
