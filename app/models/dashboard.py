@@ -4,6 +4,29 @@ import os
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Dict
+import logging
+import inspect
+
+log_dir = './logs'
+log_file = 'perflect.log'
+os.makedirs(log_dir, exist_ok=True)
+log_path = os.path.join(log_dir, log_file)
+
+logging.basicConfig(
+    filename=log_path,
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'   
+)
+
+def log_message(level, message, source):
+    caller = inspect.stack()[1].function   
+    if level == 'info':
+        logging.info(f"[{source}] [{caller}] {message}")
+    elif level == 'error':
+        logging.error(f"[{source}] [{caller}] {message}")
+    elif level == 'warning':
+        logging.warning(f"[{source}] [{caller}] {message}")
 
 class DashboardData(BaseModel):
     uptime: str
@@ -80,13 +103,17 @@ class DashboardData(BaseModel):
             
             all_data.append(data.dict())
 
+            # Keep only the most recent 100 records
             if len(all_data) > 100:
                 all_data = all_data[-100:]
 
             with open(file_path, 'w') as f:
                 json.dump(all_data, f, indent=4)
+
+            log_message('info', "Data stored successfully", "dashboard")
+
         except Exception as e:
-            print(f"Error storing data: {e}")
+            log_message('error', f"Error storing data: {e}", "dashboard")
 
     @classmethod
     def get_historical_data(cls):
@@ -96,7 +123,8 @@ class DashboardData(BaseModel):
                 with open(file_path, 'r') as f:
                     return json.load(f)
             else:
+                log_message('warning', "No historical data found", "dashboard")
                 return []
         except Exception as e:
-            print(f"Error reading data: {e}")
+            log_message('error', f"Error reading data: {e}", "dashboard")
             return []

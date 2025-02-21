@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="/static/css/main.css" />
   <link rel="stylesheet" href="/static/css/scroll.css" />
   <script src="/static/js/script.js"></script>
+  <script src="/static/js/functions/dashboard.js" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -69,130 +70,6 @@
       </main>
     </div>
   </div>
-  <script>
-    function toggleTheme() {
-      const darkMode = document.documentElement.classList.toggle('theme-dark');
-      updateChartThemes(darkMode);
-    }
 
-    function getTheme() {
-      return document.documentElement.classList.contains('theme-dark');
-    }
-
-    function updateChartThemes(isDarkMode) {
-      Highcharts.charts.forEach(chart => {
-        chart.update(getChartConfig(chart.options.title.text, chart.series[0].data, chart.yAxis[0].title.text));
-      });
-    }
-
-    async function fetchSystemData() {
-      try {
-        const response = await fetch("/api/system-data");
-        const data = await response.json();
-
-        document.querySelector("#uptime").textContent = data.current_data.uptime;
-        document.querySelector("#firewall").textContent = data.current_data.firewall_status;
-        document.querySelector("#cpu").textContent = `${data.current_data.cpu_usage.current}% | Peak: ${data.current_data.cpu_usage.peak}% | Load: ${data.current_data.cpu_usage.load.join(" / ")}`;
-        document.querySelector("#memory").textContent = `${data.current_data.memory_usage.used} GB / Total: ${data.current_data.memory_usage.total} GB`;
-        document.querySelector("#disk").textContent = `${data.current_data.disk_usage.used} GB / Total: ${data.current_data.disk_usage.total} GB`;
-
-        updateCharts(data.current_data, data.historical_data);
-
-        const sections = document.querySelectorAll('.pulse-animation');
-        sections.forEach(section => section.classList.remove('pulse-animation'));
-      } catch (error) {
-        console.error("Error fetching system data:", error);
-      }
-    }
-
-    function updateCharts(currentData, historicalData) {
-      const cpuUsageChart = Highcharts.chart('cpuUsageChart', getChartConfig('CPU Usage Over Time', getChartData(historicalData, 'cpu_usage'), 'CPU Usage'));
-      cpuUsageChart.series[0].addPoint(getChartData(historicalData.slice(-1), 'cpu_usage')[0], true, true);
-
-      const memoryUsageChart = Highcharts.chart('memoryUsageChart', getChartConfig('Memory Usage Over Time', getChartData(historicalData, 'memory_usage'), 'Memory (GB)'));
-      memoryUsageChart.series[0].addPoint(getChartData(historicalData.slice(-1), 'memory_usage')[0], true, true);
-
-      const diskUsageChart = Highcharts.chart('diskUsageChart', getChartConfig('Disk Usage Over Time', getChartData(historicalData, 'disk_usage'), 'Disk Space (GB)'));
-      diskUsageChart.series[0].addPoint(getChartData(historicalData.slice(-1), 'disk_usage')[0], true, true);
-
-      const networkTrafficChart = Highcharts.chart('networkTrafficChart', getChartConfig('Network Traffic', getChartData(historicalData, 'network_activity'), 'Traffic (KB/s)'));
-      networkTrafficChart.series[0].addPoint(getChartData(historicalData.slice(-1), 'network_activity')[0], true, true);
-    }
-
-    function getChartData(historicalData, field) {
-      const last20Data = historicalData.slice(-20);
-      return last20Data.map(item => {
-        if (field === 'cpu_usage') {
-          return item[field].current;
-        } else if (field === 'memory_usage') {
-          return item[field].used;
-        } else if (field === 'disk_usage') {
-          return item[field].used;
-        } else if (field === 'network_activity') {
-          return item[field].inbound / 1024;
-        }
-      });
-    }
-
-    function getChartConfig(title, seriesData, yAxisTitle) {
-      const isDarkMode = getTheme();
-      const backgroundColor = isDarkMode ? '#191c24' : '#ffffff';
-      const textColor = isDarkMode ? '#ffffff' : '#000000';
-
-      const purpleColor = 'rgba(138, 43, 226, 0.8)';
-      const fillGradient = {
-        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-        stops: [
-          [0, 'rgba(138, 43, 226, 0.4)'],
-          [1, 'rgba(138, 43, 226, 0)']
-        ]
-      };
-
-      return {
-        chart: {
-          type: 'area',
-          backgroundColor: backgroundColor,
-          borderRadius: 20,
-        },
-        title: {
-          text: title,
-          style: { color: textColor, fontSize: '10px' }
-        },
-        xAxis: {
-          labels: { style: { color: textColor, fontSize: '8px' } }
-        },
-        yAxis: {
-          title: { text: yAxisTitle, style: { color: textColor, fontSize: '8px' } },
-          labels: { style: { color: textColor, fontSize: '8px' } }
-        },
-        series: [{
-          name: title,
-          data: seriesData,
-          color: purpleColor,
-          fillColor: fillGradient
-        }],
-        plotOptions: {
-          area: {
-            marker: { enabled: false },
-            lineWidth: 2,
-            states: { hover: { lineWidth: 2 } },
-            threshold: null
-          }
-        },
-        legend: {
-          itemStyle: { color: textColor, fontSize: '8px' }
-        }
-      };
-    }
-
-    function fetchAnalyticsData() {
-      fetchSystemData();
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchAnalyticsData();
-      document.documentElement.style.backgroundColor = getTheme() ? '#191c24' : '#ffffff';
-    });
-  </script>
 </body>
 </html>

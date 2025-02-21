@@ -50,4 +50,3 @@ async def run_docker_container(request: Request):
         return JSONResponse(content={"message": result_message, "containers": [container.dict() for container in containers]})
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": f"Unexpected error: {str(e)}"})
-

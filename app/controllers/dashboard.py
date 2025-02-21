@@ -20,3 +20,4 @@ async def get_system_data():
     return {"current_data": current_data.dict(), "historical_data": historical_data}
 
 
+ 

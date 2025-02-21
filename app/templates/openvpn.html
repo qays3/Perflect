@@ -1,138 +1,72 @@
 <!DOCTYPE html>
-
 <html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
 
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link rel="icon" type="image/png" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="57x57" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/img/Perflect.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/tailwind.output.css" />
 
-    <meta charset="UTF-8" />
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+  <script src="/static/js/init-alpine.js"></script>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css" rel="stylesheet">
 
-    <title>{{ title }}</title>
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/scroll.css" />
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/functions/openvpn.js" defer></script>
 
-    <link rel="icon" type="image/png" href="/static/img/Perflect.png">
-
-    <link rel="apple-touch-icon" sizes="57x57" href="/static/img/Perflect.png">
-
-    <link rel="apple-touch-icon" sizes="60x60" href="/static/img/Perflect.png">
-
-    <link rel="apple-touch-icon" sizes="72x72" href="/static/img/Perflect.png">
-
-    <link rel="apple-touch-icon" sizes="76x76" href="/static/img/Perflect.png">
-
-    <link rel="apple-touch-icon" sizes="114x114" href="/static/img/Perflect.png">
-
-    <link rel="apple-touch-icon" sizes="120x120" href="/static/img/Perflect.png">
-
-    <link rel="apple-touch-icon" sizes="144x144" href="/static/img/Perflect.png">
-
-    <link rel="apple-touch-icon" sizes="152x152" href="/static/img/Perflect.png">
-
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/Perflect.png">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet" />
-
-    <link rel="stylesheet" href="/static/css/tailwind.output.css" />
-
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-
-    <script src="/static/js/init-alpine.js"></script>
-
-    <link href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="/static/css/main.css" />
-
-    <link rel="stylesheet" href="/static/css/scroll.css" />
-
-    <script src="/static/js/script.js"></script>
 
 </head>
 
 <body>
+  <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen}">
 
-    <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen}">
+    {% include 'includes/sidebar.html' %}
 
-        {% include 'includes/sidebar.html' %}
-
-        <div class="flex flex-col flex-1">
-
-            {% include 'includes/header.html' %}
-
-            <main class="h-full pb-16 overflow-y-auto">
-
-                <div class="container px-6 mx-auto grid"
-                    :class="{ 'bg-white': !dark, 'bg-gray-900': dark, 'text-black': !dark, 'text-white': dark }">
-
-                    <div class="container mx-auto p-6">
-
-                        <section class="mb-8 p-6 border border-gray-200 rounded-lg shadow-sm"
-                            :class="{ 'bg-white': !dark, 'bg-gray-800': dark, 'text-black': !dark, 'text-white': dark }">
-
-                            <h2 class="text-2xl font-semibold mb-4"
-                                :class="{ 'text-gray-700': !dark, 'text-gray-200': dark }">
-
-                                Generate OpenVPN Configuration
-
-                            </h2>
-
-                            <button id="generateVPNButton"
-                                class="bg-purple-500 text-white py-2 px-4 rounded focus:outline-none transition duration-200">
-
-                                <span class="reload-icon"></span>
-
-                                <span class="button-text">Generate OpenVPN Config</span>
-
-                            </button>
-
-                            <div id="statusMessage" class="mt-4" :class="{ 'text-black': !dark, 'text-white': dark }">
-                            </div>
-
-                        </section>
-
-                    </div>
-
-                </div>
-
-            </main>
-
+    <div class="flex flex-col flex-1">
+      {% include 'includes/header.html' %}
+      <main class="h-full pb-16 overflow-y-auto">
+        <div class="container px-6 mx-auto grid"
+            :class="{ 'bg-white': !dark, 'bg-gray-900': dark, 'text-black': !dark, 'text-white': dark }">
+            <div class="container mx-auto p-6">
+                <section class="mb-8 p-6 border border-gray-200 rounded-lg shadow-sm"
+                    :class="{ 'bg-white': !dark, 'bg-gray-800': dark, 'text-black': !dark, 'text-white': dark }">
+                    <h2 class="text-2xl font-semibold mb-4" :class="{ 'text-gray-700': !dark, 'text-gray-200': dark }">
+                        Generate OpenVPN Configuration
+                    </h2>
+    
+                    <button id="generateVPNButton" class="bg-purple-500 text-white py-2 px-4 rounded focus:outline-none transition duration-200">
+                        <span class="reload-icon"></span>
+                        <span class="button-text">Generate OpenVPN Config</span>
+                    </button>
+    
+                    <div id="statusMessage" class="mt-4" :class="{ 'text-black': !dark, 'text-white': dark }"></div>
+                </section>
+            </div>
         </div>
-
+    </main>
+      
+      
+      
+      
     </div>
+  </div>
+  <script>
 
-    <script>
-        document.getElementById('generateVPNButton').addEventListener('click', function() {
-            const generateVPNButton = document.getElementById('generateVPNButton');
-            const statusMessage = document.getElementById('statusMessage');
-            generateVPNButton.classList.add("reloading");
-            generateVPNButton.style.pointerEvents = "none";
-            statusMessage.innerHTML = 'Generating your OpenVPN file...';
-            fetch('/generate_openvpn', {
-                    method: 'POST',
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to generate OpenVPN file.');
-                    }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = URL.createObjectURL(blob);
-                    downloadLink.download = 'client.ovpn';
-                    downloadLink.click();
-                    statusMessage.innerHTML = 'OpenVPN file has been downloaded!';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    statusMessage.innerHTML = 'An error occurred while generating the OpenVPN file.';
-                })
-                .finally(() => {
-                    generateVPNButton.classList.remove("reloading");
-                    generateVPNButton.style.pointerEvents = "auto";
-                });
-        });
-    </script>
+</script>
 
 </body>
 
