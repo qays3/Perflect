@@ -346,9 +346,10 @@ The OpenVPN page enables the creation and management of OpenVPN instances to est
 ## Installation
 
 ```bash
-git clone https://github.com/your-repository/perflect-dashboard.git
-cd perflect-dashboard
-pip install -r requirements.txt
+git clone https://github.com/qays3/Perflect.git
+cd Perflect
+chmod +x setup.sh
+sudo ./setup.sh
 ```
 
 Run the app:
