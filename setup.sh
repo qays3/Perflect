@@ -79,11 +79,11 @@ setup() {
         python3 -m venv myenv
     fi
     source myenv/bin/activate
-    pip install --upgrade pip --break-system-packages
-    pip install "bleach>=6.0.0" --break-system-packages
-    pip install -r requirements.txt --break-system-packages
+    pip install --upgrade pip 
+    pip install "bleach>=6.0.0" 
+    pip install -r requirements.txt 
     if ! pip show uvicorn > /dev/null 2>&1; then
-        pip install uvicorn --break-system-packages
+        pip install uvicorn 
     fi
 }
 
