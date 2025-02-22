@@ -103,7 +103,7 @@ class DashboardData(BaseModel):
             
             all_data.append(data.dict())
 
-            # Keep only the most recent 100 records
+             
             if len(all_data) > 100:
                 all_data = all_data[-100:]
 
