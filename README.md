@@ -348,14 +348,14 @@ The OpenVPN page enables the creation and management of OpenVPN instances to est
 ```bash
 git clone https://github.com/qays3/Perflect.git
 cd Perflect
-chmod +x setup.sh
-sudo ./setup.sh
+
 ```
 
 Run the app:
 
 ```bash
-uvicorn app.main:app --reload
+chmod +x setup.sh
+sudo ./setup.sh
 ```
 
 ---
