@@ -1,7 +1,7 @@
 #!/bin/bash
 
-INI="setup.ini"
-CONFIG_FILE="./app/setup.ini"
+INI="./app/setup.ini"
+CONFIG_FILE="$INI"
 
 load_config() {
     if [ -f "$INI" ]; then
