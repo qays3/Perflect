@@ -85,6 +85,8 @@ setup() {
     if ! pip show uvicorn > /dev/null 2>&1; then
         pip install uvicorn 
     fi
+    deactivate
+    cd ..
 }
 
 check_port_running() {
@@ -138,8 +140,8 @@ After=network.target
 
 [Service]
 User=$USER
-WorkingDirectory=$PWD
-ExecStart=$PWD/myenv/bin/python -m uvicorn main:app --reload --host $IP --port $PORT
+WorkingDirectory=$PWD/app
+ExecStart=$PWD/app/myenv/bin/python -m uvicorn main:app --reload --host $IP --port $PORT
 Restart=always
 
 [Install]
@@ -162,8 +164,12 @@ WantedBy=multi-user.target" | sudo tee /etc/systemd/system/perflect_dashboard.se
 }
 
 start_application() {
-    sudo nohup ./myenv/bin/python -m uvicorn main:app --reload --host $IP --port $PORT > /dev/null 2>&1 &
+    cd "app"
+    source myenv/bin/activate
+    nohup myenv/bin/python -m uvicorn main:app --reload --host $IP --port $PORT > /dev/null 2>&1 &
     echo -e "\033[0;32mVisit the website at http://$IP:$PORT\033[0m"
+    deactivate
+    cd ..
 }
 
 main() {
