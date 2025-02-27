@@ -75,19 +75,21 @@ setup() {
     sudo apt-get install -y python3.12-venv ufw nginx htop iotop docker.io openvpn easy-rsa
     dpkg-query -L easy-rsa > /dev/null 2>&1
     cd "app"
-    if [ ! -d "myenv" ]; then
-        python3 -m venv myenv
+    if [ -d "myenv" ]; then
+        rm -rf myenv
     fi
+    python3 -m venv myenv
     source myenv/bin/activate
-    pip install --upgrade pip 
-    pip install "bleach>=6.0.0" 
-    pip install -r requirements.txt 
+    pip install --upgrade pip
+    pip install "bleach>=6.0.0"
+    pip install -r requirements.txt
     if ! pip show uvicorn > /dev/null 2>&1; then
-        pip install uvicorn 
+        pip install uvicorn
     fi
     deactivate
     cd ..
 }
+
 
 check_port_running() {
     if lsof -i :$PORT; then
@@ -215,7 +217,7 @@ main() {
         fi
         if validate_ip "$user_ip"; then
             IP=$user_ip
-            break
+            break``
         fi
     done
 
