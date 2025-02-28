@@ -2,11 +2,8 @@ import subprocess
 import logging
 import inspect
 import os
-<<<<<<< HEAD
 import psutil
 from collections import deque
-=======
->>>>>>> 056fad599c7648f2a924f04ea510b355067a52e4
 
 log_dir = './logs'
 log_file = 'perflect.log'
@@ -36,7 +33,6 @@ def perform_reboot():
         return {"status": "success", "message": "System is rebooting."}
     except subprocess.CalledProcessError as e:
         log_message('error', f"Failed to reboot the system: {e}", "reboot")
-<<<<<<< HEAD
         return {"status": "error", "message": "Failed to reboot the system."}
 
 cpu_history = deque(maxlen=30)
@@ -62,6 +58,3 @@ def get_resources_usage():
 
 def get_resources_history():
     return list(cpu_history), list(ram_history)
-=======
-        return {"status": "error", "message": "Failed to reboot the system."}
->>>>>>> 056fad599c7648f2a924f04ea510b355067a52e4

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 fastapi
 uvicorn
 Jinja2
@@ -9,15 +8,3 @@ apscheduler
 requests
 python-multipart
 
-=======
-fastapi
-uvicorn
-Jinja2
-psutil
-uptime
-aiofiles
-apscheduler
-requests
-python-multipart
-
->>>>>>> 056fad599c7648f2a924f04ea510b355067a52e4
