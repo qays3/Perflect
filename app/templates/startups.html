@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link rel="icon" type="image/png" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="57x57" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/img/Perflect.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/img/Perflect.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/tailwind.output.css" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+  <script src="/static/js/init-alpine.js"></script>
+
+  <link href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/scroll.css" />
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/functions/startups.js" defer></script>
+
+</head>
+
+<body>
+  <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen}">
+
+    {% include 'includes/sidebar.html' %}
+
+    <div class="flex flex-col flex-1">
+      {% include 'includes/header.html' %}
+      <main class="h-full pb-16 overflow-y-auto">
+        <div class="container px-6 mx-auto grid" :class="{ 'bg-white': !dark, 'bg-gray-900': dark, 'text-black': !dark, 'text-white': dark }">
+    
+            <div class="container mx-auto p-6">
+
+    
+                 
+                <section class="mb-8 p-6 border border-gray-200 rounded-lg shadow-sm" :class="{ 'bg-white': !dark, 'bg-gray-800': dark, 'text-black': !dark, 'text-white': dark }">
+                    <h2 class="text-2xl font-semibold mb-4" :class="{ 'text-gray-700': !dark, 'text-gray-200': dark }">Add Startup Process</h2>
+    
+                    <p class="mb-4 text-sm" :class="{ 'text-gray-600': !dark, 'text-gray-300': dark }">Upload a shell script or executable file to be added to the system startup.</p>
+     
+                    <div id="fileDropZone" class="flex justify-center items-center w-full h-40 mb-4 border-4 border-dashed rounded-lg cursor-pointer transition duration-300 ease-in-out border-white" :class="{ 'bg-gray-50 hover:bg-gray-100': !dark, 'bg-gray-700 hover:bg-gray-600': dark }">
+                        <label for="startupFile" class="flex flex-col justify-center items-center w-full h-full text-sm text-center">
+                            <div class="w-16 h-16 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8 text-gray-500 dark:text-gray-200">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                            </div>
+                            <p :class="{ 'text-gray-600': !dark, 'text-gray-400': dark }">Drag & drop or click to select a file</p>
+                            <input type="file" id="startupFile" class="hidden" accept=".sh, .bash, .service" onchange="updateFileName(event)" />
+                        </label>
+                    </div>
+    
+                    
+                    <div id="fileNameDisplay" class="text-center text-sm text-gray-600 dark:text-gray-300"></div>
+    
+                     
+                    <button id="uploadButton" class="py-2 px-4 rounded focus:outline-none transition duration-200" :class="{ 'bg-purple-500 hover:bg-purple-700 text-white': !dark, 'bg-purple-600 hover:bg-purple-800 text-white': dark }" onclick="uploadFile()">
+                        <span class="reload-icon"></span>
+                        <span class="button-text">Add to Startup</span>
+                    </button>
+                    
+                    <div id="statusMessage" class="mt-4" :class="{ 'text-black': !dark, 'text-white': dark }"></div>
+                </section>
+            </div>
+        </div>
+    
+         
+        <div id="messageBox" style="display:none; padding: 10px; background-color: #4CAF50; color: white; border-radius: 5px; position: fixed; bottom: 20px; right: 20px;">
+            File added to startup successfully!
+        </div>
+    </main>
+      
+
+      
+      
+    </div>
+  </div>
+ 
+</body>
+
+</html>

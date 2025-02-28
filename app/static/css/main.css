@@ -1,0 +1,77 @@
+.click-effect {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #8743ff;  
+  border-radius: 50%;
+  pointer-events: none;  
+  animation: click-animate 0.6s ease-out;
+}
+
+@keyframes click-animate {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.reload-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  vertical-align: middle;
+  margin: 0 auto;
+}
+
+.reload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+button.reloading .reload-icon {
+  display: inline-block;
+}
+
+button.reloading .button-text {
+  display: none;
+}
+
+button:not(.reloading) .reload-icon {
+  display: none;
+}
+
+/**/
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.pulse-animation {
+  background-color: rgba(138, 43, 226, 0.1);
+  animation: pulse 1.5s infinite;
+  border-radius: 16px;
+}
