@@ -1,5 +1,3 @@
-// analytics.js
-
 const purpleColor = '#8a2be2';
 
 async function fetchAnalyticsData() {
@@ -7,8 +5,10 @@ async function fetchAnalyticsData() {
     const response = await fetch('/api/analytics-data');
     const data = await response.json();
     updateCharts(data.current_data, data.historical_data);
+    removePulseAnimation();  
   } catch (error) {
     console.error('Error fetching analytics data:', error);
+ 
   }
 }
 
@@ -79,7 +79,6 @@ function getChartConfig(title, seriesData, yAxisTitle) {
   };
 }
 
- 
 const chartInstances = {
   cpuUsageChart: null,
   memoryUsageChart: null,
@@ -88,7 +87,6 @@ const chartInstances = {
   systemLoadChart: null
 };
 
- 
 function updateCharts(currentData, historicalData) {
   const chartContainers = document.querySelectorAll(
     '#cpuUsageChart, #memoryUsageChart, #diskUsageChart, #networkTrafficChart, #systemLoadChart'
@@ -97,57 +95,76 @@ function updateCharts(currentData, historicalData) {
     container.classList.remove('pulse-animation');
   });
 
-  chartInstances.cpuUsageChart = Highcharts.chart(
-    'cpuUsageChart',
-    getChartConfig(
-      'CPU Usage Over Time',
-      historicalData?.map((item) => item.cpu_usage) || [],
-      'CPU (%)'
-    )
-  );
-  
-  chartInstances.memoryUsageChart = Highcharts.chart(
-    'memoryUsageChart',
-    getChartConfig(
-      'Memory Usage Over Time',
-      historicalData?.map((item) => item.memory_usage) || [],
-      'Memory (GB)'
-    )
-  );
-  
-  chartInstances.diskUsageChart = Highcharts.chart(
-    'diskUsageChart',
-    getChartConfig(
-      'Disk Usage Over Time',
-      historicalData?.map((item) => item.disk_usage) || [],
-      'Disk Usage (GB)'
-    )
-  );
-  
-  chartInstances.networkTrafficChart = Highcharts.chart(
-    'networkTrafficChart',
-    getChartConfig(
-      'Network Traffic Analytics',
-      historicalData?.map((item) => item.network_activity) || [],
-      'Traffic (Mbps)'
-    )
-  );
-  
-  chartInstances.systemLoadChart = Highcharts.chart(
-    'systemLoadChart',
-    getChartConfig(
-      'System Load Over Time',
-      historicalData?.map((item) => item.system_load) || [],
-      'Load'
-    )
-  );
+  if (chartInstances.cpuUsageChart) {
+    chartInstances.cpuUsageChart.series[0].setData(historicalData?.map((item) => item.cpu_usage) || []);
+  } else {
+    chartInstances.cpuUsageChart = Highcharts.chart(
+      'cpuUsageChart',
+      getChartConfig(
+        'CPU Usage Over Time',
+        historicalData?.map((item) => item.cpu_usage) || [],
+        'CPU (%)'
+      )
+    );
+  }
+
+  if (chartInstances.memoryUsageChart) {
+    chartInstances.memoryUsageChart.series[0].setData(historicalData?.map((item) => item.memory_usage) || []);
+  } else {
+    chartInstances.memoryUsageChart = Highcharts.chart(
+      'memoryUsageChart',
+      getChartConfig(
+        'Memory Usage Over Time',
+        historicalData?.map((item) => item.memory_usage) || [],
+        'Memory (GB)'
+      )
+    );
+  }
+
+  if (chartInstances.diskUsageChart) {
+    chartInstances.diskUsageChart.series[0].setData(historicalData?.map((item) => item.disk_usage) || []);
+  } else {
+    chartInstances.diskUsageChart = Highcharts.chart(
+      'diskUsageChart',
+      getChartConfig(
+        'Disk Usage Over Time',
+        historicalData?.map((item) => item.disk_usage) || [],
+        'Disk Usage (GB)'
+      )
+    );
+  }
+
+  if (chartInstances.networkTrafficChart) {
+    chartInstances.networkTrafficChart.series[0].setData(historicalData?.map((item) => item.network_activity) || []);
+  } else {
+    chartInstances.networkTrafficChart = Highcharts.chart(
+      'networkTrafficChart',
+      getChartConfig(
+        'Network Traffic Analytics',
+        historicalData?.map((item) => item.network_activity) || [],
+        'Traffic (Mbps)'
+      )
+    );
+  }
+
+  if (chartInstances.systemLoadChart) {
+    chartInstances.systemLoadChart.series[0].setData(historicalData?.map((item) => item.system_load) || []);
+  } else {
+    chartInstances.systemLoadChart = Highcharts.chart(
+      'systemLoadChart',
+      getChartConfig(
+        'System Load Over Time',
+        historicalData?.map((item) => item.system_load) || [],
+        'Load'
+      )
+    );
+  }
 }
 
 function getTheme() {
   return document.documentElement.classList.contains('theme-dark');
 }
 
- 
 function updateChartThemes() {
   const isDarkMode = getTheme();
   const backgroundColor = isDarkMode ? '#191c24' : '#ffffff';
@@ -194,7 +211,6 @@ function updateChartThemes() {
   });
 }
 
- 
 function renderEmptyCharts() {
   chartInstances.cpuUsageChart = Highcharts.chart(
     'cpuUsageChart',
@@ -218,7 +234,15 @@ function renderEmptyCharts() {
   );
 }
 
- 
+function removePulseAnimation() {
+  const chartContainers = document.querySelectorAll(
+    '#cpuUsageChart, #memoryUsageChart, #diskUsageChart, #networkTrafficChart, #systemLoadChart'
+  );
+  chartContainers.forEach((container) => {
+    container.classList.remove('pulse-animation');
+  });
+}
+
 const themeObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if (mutation.attributeName === 'class') {
@@ -231,8 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
   renderEmptyCharts();
   fetchAnalyticsData();
   document.documentElement.style.backgroundColor = getTheme() ? '#191c24' : '#ffffff';
-  
- 
+
+   
+  setInterval(fetchAnalyticsData, 300000);
+
   themeObserver.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['class']

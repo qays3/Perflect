@@ -1,5 +1,3 @@
-// dashboard.js
- 
 const chartInstances = {
   cpuUsageChart: null,
   memoryUsageChart: null,
@@ -77,6 +75,7 @@ async function fetchSystemData() {
     document.querySelector("#cpu").textContent = `${data.current_data.cpu_usage.current}% | Peak: ${data.current_data.cpu_usage.peak}% | Load: ${data.current_data.cpu_usage.load.join(" / ")}`;
     document.querySelector("#memory").textContent = `${data.current_data.memory_usage.used} GB / Total: ${data.current_data.memory_usage.total} GB`;
     document.querySelector("#disk").textContent = `${data.current_data.disk_usage.used} GB / Total: ${data.current_data.disk_usage.total} GB`;
+    document.querySelector("#network").textContent = `${(data.current_data.network_activity.inbound / 1024).toFixed(3)} KB/s`;
 
     updateCharts(data.current_data, data.historical_data);
 
@@ -88,7 +87,6 @@ async function fetchSystemData() {
 }
 
 function updateCharts(currentData, historicalData) {
-   
   if (!chartInstances.cpuUsageChart) {
     chartInstances.cpuUsageChart = Highcharts.chart('cpuUsageChart', 
       getChartConfig('CPU Usage Over Time', getChartData(historicalData, 'cpu_usage'), 'CPU Usage')
@@ -97,7 +95,6 @@ function updateCharts(currentData, historicalData) {
     chartInstances.cpuUsageChart.series[0].setData(getChartData(historicalData, 'cpu_usage'));
   }
 
- 
   if (!chartInstances.memoryUsageChart) {
     chartInstances.memoryUsageChart = Highcharts.chart('memoryUsageChart', 
       getChartConfig('Memory Usage Over Time', getChartData(historicalData, 'memory_usage'), 'Memory (GB)')
@@ -106,7 +103,6 @@ function updateCharts(currentData, historicalData) {
     chartInstances.memoryUsageChart.series[0].setData(getChartData(historicalData, 'memory_usage'));
   }
 
-   
   if (!chartInstances.diskUsageChart) {
     chartInstances.diskUsageChart = Highcharts.chart('diskUsageChart', 
       getChartConfig('Disk Usage Over Time', getChartData(historicalData, 'disk_usage'), 'Disk Space (GB)')
@@ -115,7 +111,6 @@ function updateCharts(currentData, historicalData) {
     chartInstances.diskUsageChart.series[0].setData(getChartData(historicalData, 'disk_usage'));
   }
 
-  
   if (!chartInstances.networkTrafficChart) {
     chartInstances.networkTrafficChart = Highcharts.chart('networkTrafficChart', 
       getChartConfig('Network Traffic', getChartData(historicalData, 'network_activity'), 'Traffic (KB/s)')
@@ -135,7 +130,7 @@ function getChartData(historicalData, field) {
     } else if (field === 'disk_usage') {
       return item[field].used;
     } else if (field === 'network_activity') {
-      return item[field].inbound / 1024;
+      return parseFloat((item[field].inbound / 1024).toFixed(3));
     }
   });
 }
@@ -195,7 +190,6 @@ function fetchAnalyticsData() {
   fetchSystemData();
 }
 
- 
 const themeObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if (mutation.attributeName === 'class') {
@@ -207,8 +201,9 @@ const themeObserver = new MutationObserver((mutations) => {
 document.addEventListener('DOMContentLoaded', () => {
   fetchAnalyticsData();
   document.documentElement.style.backgroundColor = getTheme() ? '#191c24' : '#ffffff';
-  
- 
+
+  setInterval(fetchSystemData, 300000);
+
   themeObserver.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['class']
