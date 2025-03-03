@@ -70,12 +70,12 @@
                         <td class="px-4 py-2">{{ process.cpu }}</td>
                         <td class="px-4 py-2">{{ process.memory }}</td>
                         <td class="px-4 py-2">
-                          <button type="button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200" onclick="killProcess({{ process.pid }})">
+                          <button type="button" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200" onclick="killProcess({{ process.pid }})">
                             <span class="reload-icon"></span>
                             <span class="button-text">Kill</span>
                         </button>
                         
-                        <button type="button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 ml-2" onclick="killProcessForce({{ process.pid }})">
+                        <button type="button" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200 ml-2" onclick="killProcessForce({{ process.pid }})">
                             <span class="reload-icon"></span>
                             <span class="button-text">Kill Force</span>
                         </button>
